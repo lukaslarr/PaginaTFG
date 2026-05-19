@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Departamentos - Lucas Company</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+    header {
+      background: #0a2540;
+      color: white;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #00bfff;
+    }
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .dropdown {
+      position: relative;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: white;
+      color: #333;
+      min-width: 200px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-content a {
+      color: #333;
+      padding: 12px 16px;
+      display: block;
+    }
+    .dropdown-content a:hover {
+      background: #f0f0f0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #0a2540;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+    }
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #0a2540;
+      color: white;
+    }
+    tr:hover {
+      background: #f8f9fa;
+    }
+    .btn {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn-edit { background: #ffc107; color: black; }
+    .btn-delete { background: #dc3545; color: white; }
+    .btn-primary {
+      background: #00bfff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .formulario {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 12px;
+      margin-top: 30px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    footer {
+      background: #0a2540;
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <nav>
+      <div class="logo">Lucas Company</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Inicio</a></li>
+        
+        <li class="dropdown">
+          <a href="#">La Empresa ▼</a>
+          <div class="dropdown-content">
+            <a href="index.html#quienes-somos">¿Quiénes Somos?</a>
+            <a href="index.html#misiones">Misión y Visión</a>
+            <a href="index.html#valores">Valores</a>
+          </div>
+        </li>
+        
+        <li><a href="gestion.html">Gestión de Empleados</a></li>
+        <li><a href="departamentos.html">Departamentos</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>Gestión de Departamentos</h1>
+
+    <button class="btn-primary" onclick="cargarDepartamentos()">Actualizar Lista</button>
+
+    <!-- Tabla de Departamentos -->
+    <table id="tabla-departamentos">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Formulario -->
+    <div class="formulario">
+      <h2 id="form-titulo">Crear Nuevo Departamento</h2>
+      <form id="form-departamento">
+        <input type="hidden" id="dep-id">
+
+        <div class="form-group">
+          <label>Nombre del Departamento *</label>
+          <input type="text" id="dep-nombre" required>
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="dep-descripcion" rows="4"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%;">Guardar Departamento</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Lucas Company - Todos los derechos reservados</p>
+    <p>TFG - Lukas Larr</p>
+  </footer>
+
+  <script>
+    const API_URL = "http://localhost:8080";   // ← Cambia según tu backend
+
+    // Cargar todos los departamentos
+    async function cargarDepartamentos() {
+      try {
+        const res = await fetch(`${API_URL}/departamentos`);
+        const departamentos = await res.json();
+
+        const tbody = document.querySelector("#tabla-departamentos tbody");
+        tbody.innerHTML = "";
+
+        departamentos.forEach(dep => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${dep.id}</td>
+            <td><strong>${dep.nombre}</strong></td>
+            <td>${dep.descripcion || '-'}</td>
+            <td>
+              <button class="btn btn-edit" onclick="editarDepartamento(${dep.id})">Editar</button>
+              <button class="btn btn-delete" onclick="eliminarDepartamento(${dep.id})">Eliminar</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        alert("Error al cargar departamentos: " + error.message);
+      }
+    }
+
+    // Enviar formulario (Crear o Actualizar)
+    document.getElementById("form-departamento").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById("dep-id").value;
+      const departamento = {
+        nombre: document.getElementById("dep-nombre").value,
+        descripcion: document.getElementById("dep-descripcion").value
+      };
+
+      try {
+        let res;
+        if (id) {
+          // Actualizar
+          res = await fetch(`${API_URL}/departamentos/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(departamento)
+          });
+        } else {
+          // Crear
+          res = await fetch(`${API_URL}/departamentos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(departamento)
+          });
+        }
+
+        if (res.ok) {
+          alert(id ? "Departamento actualizado correctamente" : "Departamento creado correctamente");
+          cargarDepartamentos();
+          resetFormulario();
+        } else {
+          alert("Error al guardar el departamento");
+        }
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    });
+
+    // Editar departamento
+    async function editarDepartamento(id) {
+      try {
+        const res = await fetch(`${API_URL}/departamentos/${id}`);
+        const dep = await res.json();
+
+        document.getElementById("dep-id").value = dep.id;
+        document.getElementById("dep-nombre").value = dep.nombre;
+        document.getElementById("dep-descripcion").value = dep.descripcion || "";
+
+        document.getElementById("form-titulo").textContent = "Editar Departamento";
+      } catch (error) {
+        alert("Error al cargar datos del departamento");
+      }
+    }
+
+    // Eliminar departamento
+    async function eliminarDepartamento(id) {
+      if (!confirm("¿Estás seguro de eliminar este departamento?")) return;
+
+      try {
+        await fetch(`${API_URL}/departamentos/${id}`, { method: "DELETE" });
+        alert("Departamento eliminado");
+        cargarDepartamentos();
+      } catch (error) {
+        alert("Error al eliminar el departamento");
+      }
+    }
+
+    // Resetear formulario
+    function resetFormulario() {
+      document.getElementById("form-departamento").reset();
+      document.getElementById("dep-id").value = "";
+      document.getElementById("form-titulo").textContent = "Crear Nuevo Departamento";
+    }
+
+    // Cargar al iniciar
+    window.onload = cargarDepartamentos;
+  </script>
+</body>
+</html>

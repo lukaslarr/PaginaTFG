@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Empleados - Lucas Company</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+    header {
+      background: #0a2540;
+      color: white;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    .logo { font-size: 1.8rem; font-weight: bold; color: #00bfff; }
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1 { text-align: center; color: #0a2540; margin-bottom: 30px; }
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .btn-primary { background: #00bfff; color: white; }
+    .btn-edit { background: #ffc107; color: black; }
+    .btn-delete { background: #dc3545; color: white; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+    }
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th { background: #0a2540; color: white; }
+    tr:hover { background: #f8f9fa; }
+
+    .formulario {
+      background: #f8f9fa;
+      padding: 35px;
+      border-radius: 12px;
+      margin-top: 40px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+    }
+    footer {
+      background: #0a2540;
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <nav>
+      <div class="logo">Lucas Company</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="gestion.html">Gestión de Empleados</a></li>
+        <li><a href="departamentos.html">Departamentos</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>Gestión de Empleados</h1>
+
+    <button class="btn btn-primary" onclick="cargarEmpleados()">🔄 Actualizar Lista</button>
+
+    <table id="tabla-empleados">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellidos</th>
+          <th>Género</th>
+          <th>Teléfono</th>
+          <th>Salario</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Formulario para enviar datos JSON al backend -->
+    <div class="formulario">
+      <h2 id="form-titulo">Registrar Nuevo Empleado</h2>
+      <form id="form-empleado">
+        <input type="hidden" id="emp-id">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="emp-nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Primer Apellido *</label>
+            <input type="text" id="emp-primer-ap" required>
+          </div>
+          <div class="form-group">
+            <label>Segundo Apellido</label>
+            <input type="text" id="emp-segundo-ap">
+          </div>
+          <div class="form-group">
+            <label>Género *</label>
+            <select id="emp-genero" required>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+              <option value="O">Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" id="emp-telefono">
+          </div>
+          <div class="form-group">
+            <label>Nº Seguridad Social *</label>
+            <input type="text" id="emp-nss" required>
+          </div>
+          <div class="form-group">
+            <label>Salario (€)</label>
+            <input type="number" id="emp-salario" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Fecha de Nacimiento</label>
+            <input type="date" id="emp-fecha-nac">
+          </div>
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="emp-email">
+          </div>
+          <div class="form-group">
+            <label>DNI</label>
+            <input type="text" id="emp-dni">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 25px; padding: 14px;">
+          💾 Guardar Empleado (Enviar JSON)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Lucas Company - Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    // ==================== CONFIGURACIÓN ====================
+    const API_URL = "http://localhost:8000";   // ← Cambia esto si tu backend está en otro puerto o dominio
+
+    // ==================== CARGAR EMPLEADOS ====================
+    async function cargarEmpleados() {
+      try {
+        const res = await fetch(`${API_URL}/empleados`);
+        if (!res.ok) throw new Error("Error al obtener empleados");
+        
+        const empleados = await res.json();
+        const tbody = document.querySelector("#tabla-empleados tbody");
+        tbody.innerHTML = "";
+
+        empleados.forEach(emp => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${emp.id || '-'}</td>
+            <td>${emp.nombre}</td>
+            <td>${emp.primerApellido || ''} ${emp.segundoApellido || ''}</td>
+            <td>${emp.genero || '-'}</td>
+            <td>${emp.telefono || '-'}</td>
+            <td>${emp.salario ? Number(emp.salario).toFixed(2) + ' €' : '-'}</td>
+            <td>
+              <button class="btn btn-edit" onclick="editarEmpleado(${emp.id})">Editar</button>
+              <button class="btn btn-delete" onclick="eliminarEmpleado(${emp.id})">Eliminar</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error(err);
+        alert("No se pudo conectar con el backend.\nVerifica que esté corriendo en " + API_URL);
+      }
+    }
+
+    // ==================== ENVIAR EMPLEADO (POST / PUT) ====================
+    document.getElementById("form-empleado").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById("emp-id").value;
+
+      const empleado = {
+        nombre: document.getElementById("emp-nombre").value,
+        primer_apellido: document.getElementById("emp-primer-ap").value,
+        segundo_apellido: document.getElementById("emp-segundo-ap").value || null,
+        genero: document.getElementById("emp-genero").value,
+        telefono: document.getElementById("emp-telefono").value || null,
+        numero_seguridad_social: document.getElementById("emp-nss").value,
+        salario: parseFloat(document.getElementById("emp-salario").value) || 0,
+        fecha_nacimiento: document.getElementById("emp-fecha-nac").value || null,
+        correo_electronico: document.getElementById("emp-email").value || null,
+        dni: document.getElementById("emp-dni").value || null,
+        foto_perfil: " "
+      };
+
+      try {
+        let res;
+        if (id) {
+          // Actualizar
+          res = await fetch(`${API_URL}/empleados/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(empleado)
+          });
+        } else {
+          // Crear nuevo
+          res = await fetch(`${API_URL}/empleados`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(empleado)
+          });
+        }
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert(id ? "✅ Empleado actualizado correctamente" : "✅ Empleado creado correctamente");
+          cargarEmpleados();
+          resetFormulario();
+        } else {
+          alert("❌ Error: " + (data.error || data.message || "No se pudo guardar"));
+        }
+      } catch (err) {
+        console.error(err);
+        alert("❌ No se pudo conectar con el servidor. Verifica que el backend esté corriendo.");
+      }
+    });
+
+    // ==================== FUNCIONES AUXILIARES ====================
+    async function editarEmpleado(id) {
+      try {
+        const res = await fetch(`${API_URL}/empleados/${id}`);
+        const emp = await res.json();
+
+        document.getElementById("emp-id").value = emp.id;
+        document.getElementById("emp-nombre").value = emp.nombre;
+        document.getElementById("emp-primer-ap").value = emp.primer_apellido;
+        document.getElementById("emp-segundo-ap").value = emp.segundo_apellido || "";
+        document.getElementById("emp-genero").value = emp.genero;
+        document.getElementById("emp-telefono").value = emp.telefono || "";
+        document.getElementById("emp-nss").value = emp.numero_seguridad_social;
+        document.getElementById("emp-salario").value = emp.salario || "";
+        document.getElementById("emp-fecha-nac").value = emp.fecha_nacimiento || "";
+        document.getElementById("emp-email").value = emp.correo_electronico || "";
+        document.getElementById("emp-dni").value = emp.dni || "";
+
+        document.getElementById("form-titulo").textContent = "Editar Empleado";
+      } catch (err) {
+        alert("Error al cargar empleado");
+      }
+    }
+
+    async function eliminarEmpleado(id) {
+      if (!confirm("¿Eliminar este empleado?")) return;
+      
+      try {
+        await fetch(`${API_URL}/empleados/${id}`, { method: "DELETE" });
+        alert("Empleado eliminado");
+        cargarEmpleados();
+      } catch (err) {
+        alert("Error al eliminar");
+      }
+    }
+
+    function resetFormulario() {
+      document.getElementById("form-empleado").reset();
+      document.getElementById("emp-id").value = "";
+      document.getElementById("form-titulo").textContent = "Registrar Nuevo Empleado";
+    }
+
+    // Cargar lista al abrir la página
+    window.onload = cargarEmpleados;
+  </script>
+</body>
+</html>
