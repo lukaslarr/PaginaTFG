@@ -12,7 +12,7 @@
       color: #333;
       background: #f8f9fa;
     }
-    header {
+     header {
       background: #0a2540;
       color: white;
       padding: 1rem 0;
@@ -29,7 +29,11 @@
       align-items: center;
       padding: 0 20px;
     }
-    .logo { font-size: 1.8rem; font-weight: bold; color: #00bfff; }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #00bfff;
+    }
     .nav-links {
       display: flex;
       gap: 30px;
@@ -39,6 +43,39 @@
       color: white;
       text-decoration: none;
       font-weight: 500;
+    }
+    .dropdown {
+      position: relative;
+    }
+    .dropdown-content::before {
+      content: "";
+      position: absolute;
+      top: -10px; /* Cubre exactamente el tamaño de tu margin-top */
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: transparent; /* Se mantiene oculto al usuario */
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: white;
+      color: #333;
+      min-width: 200px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-content a {
+      color: #333;
+      padding: 12px 16px;
+      display: block;
+    }
+    .dropdown-content a:hover {
+      background: #f0f0f0;
     }
     .container {
       max-width: 1200px;
@@ -107,17 +144,29 @@
 <body>
 
   <!-- HEADER -->
-  <header>
+ <header>
     <nav>
       <div class="logo">Lucas Company</div>
       <ul class="nav-links">
         <li><a href="index.html">Inicio</a></li>
+        
+        <li class="dropdown">
+          <a href="#">La Empresa ▼</a>
+          <div class="dropdown-content">
+            <a href="index.html#quienes-somos">¿Quiénes Somos?</a>
+            <a href="index.html#misiones">Misión y Visión</a>
+            <a href="index.html#valores">Valores</a>
+          </div>
+        </li>
+        
         <li><a href="gestion.html">Gestión de Empleados</a></li>
         <li><a href="departamentos.html">Departamentos</a></li>
         <li><a href="contacto.html">Contacto</a></li>
+        <li><a href="#" id="logout">Logout</a></li>
       </ul>
     </nav>
   </header>
+
 
   <div class="container">
     <h1>Gestión de Empleados</h1>
@@ -335,7 +384,38 @@
     }
 
     // Cargar lista al abrir la página
-    window.onload = cargarEmpleados;
+
+
+    // Verificar si el usuario está logueado
+    function checkAuth() {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      const authSection = document.getElementById("auth-section");
+
+      if (isLoggedIn !== "true") {
+        window.location.href = "login.html";
+      }
+    }
+
+    const logoutConst = document.getElementById("logout");
+    logoutConst.addEventListener("click", function(e) {
+      e.preventDefault();
+      logout();
+    });
+
+    function logout() {
+      if (confirm("¿Cerrar sesión?")) {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userEmail");
+        window.location.href = "login.html";
+      }
+    }
+
+    // Ejecutar al cargar la página
+    window.onload = () => {
+      checkAuth();
+      cargarEmpleados();
+      // Si ya tienes window.onload, combina las funciones
+    };
   </script>
 </body>
 </html>

@@ -47,6 +47,15 @@
     .dropdown {
       position: relative;
     }
+    .dropdown-content::before {
+      content: "";
+      position: absolute;
+      top: -10px; /* Cubre exactamente el tamaño de tu margin-top */
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: transparent; /* Se mantiene oculto al usuario */
+    }
     .dropdown-content {
       display: none;
       position: absolute;
@@ -167,6 +176,7 @@
         <li><a href="gestion.html">Gestión de Empleados</a></li>
         <li><a href="departamentos.html">Departamentos</a></li>
         <li><a href="contacto.html">Contacto</a></li>
+        <li><a href="#" id="logout">Logout</a></li>
       </ul>
     </nav>
   </header>
@@ -321,8 +331,37 @@
       document.getElementById("form-titulo").textContent = "Crear Nuevo Departamento";
     }
 
-    // Cargar al iniciar
-    window.onload = cargarDepartamentos;
+
+    // Verificar si el usuario está logueado
+    function checkAuth() {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      const authSection = document.getElementById("auth-section");
+
+      if (isLoggedIn !== "true") {
+        window.location.href = "login.html";
+      }
+    }
+
+    const logoutConst = document.getElementById("logout");
+    logoutConst.addEventListener("click", function(e) {
+      e.preventDefault();
+      logout();
+    });
+    function logout() {
+      if (confirm("¿Cerrar sesión?")) {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userEmail");
+        window.location.href = "login.html";
+      }
+    }
+
+    // Ejecutar al cargar la página
+    window.onload = () => {
+      checkAuth();
+      cargarDepartamentos();
+      // Si ya tienes window.onload, combina las funciones
+    };
+
   </script>
 </body>
 </html>
