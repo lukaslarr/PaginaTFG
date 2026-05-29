@@ -4,32 +4,66 @@ const API_URL = "http://localhost:8000";   // ← Cambia esto si tu backend est�
 // ==================== CARGAR EMPLEADOS ====================
 async function cargarEmpleados() {
     try {
-    const res = await fetch(`${API_URL}/empleados`);
-    if (!res.ok) throw new Error("Error al obtener empleados");
-    
-    const empleados = await res.json();
-    const tbody = document.querySelector("#tabla-empleados tbody");
-    tbody.innerHTML = "";
+        const res = await fetch(`${API_URL}/empleados`);
+        if (!res.ok) throw new Error("Error al obtener empleados");
+        
+        const empleados = await res.json();
+        const tbody = document.querySelector("#tabla-empleados tbody");
+        tbody.innerHTML = "";
 
-    empleados.forEach(emp => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-        <td>${emp.id || '-'}</td>
-        <td>${emp.nombre}</td>
-        <td>${emp.primerApellido || ''} ${emp.segundoApellido || ''}</td>
-        <td>${emp.genero || '-'}</td>
-        <td>${emp.telefono || '-'}</td>
-        <td>${emp.salario ? Number(emp.salario).toFixed(2) + ' €' : '-'}</td>
-        <td>
-            <button class="btn btn-edit" onclick="editarEmpleado(${emp.id})">Editar</button>
-            <button class="btn btn-delete" onclick="eliminarEmpleado(${emp.id})">Eliminar</button>
-        </td>
-        `;
-        tbody.appendChild(tr);
-    });
+        empleados.forEach(emp => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+            <td>${emp.id || '-'}</td>
+            <td>${emp.nombre}</td>
+            <td>${emp.primerApellido || ''} ${emp.segundoApellido || ''}</td>
+            <td>${emp.genero || '-'}</td>
+            <td>${emp.telefono || '-'}</td>
+            <td>${emp.salario ? Number(emp.salario).toFixed(2) + ' €' : '-'}</td>
+            <td>
+                <button class="btn btn-edit" onclick="editarEmpleado(${emp.id})">Editar</button>
+                <button class="btn btn-delete" onclick="eliminarEmpleado(${emp.id})">Eliminar</button>
+            </td>
+            `;
+            tbody.appendChild(tr);
+        });
     } catch (err) {
     console.error(err);
     alert("No se pudo conectar con el backend.\nVerifica que esté corriendo en " + API_URL);
+    }
+}
+
+async function cargarDepartamentos() {
+    try {
+        const res = await fetch(`${API_URL}/departamentos`);
+        const departamentos = await res.json();
+        const select = document.getElementById("emp-departamento");
+        departamentos.forEach(dep => {
+            const option = document.createElement("option");
+            option.value = dep.id;
+            option.textContent = dep.nombre;
+            select.appendChild(option);
+        });
+    } catch (err) {
+        console.error(err);
+        alert("No se pudieron cargar los departamentos.");
+    }
+}
+
+async function cargarContratos() {
+    try {
+        const res = await fetch(`${API_URL}/tipos-contrato`);
+        const contratos = await res.json();
+        const select = document.getElementById("emp-contrato");
+        contratos.forEach(cont => {
+            const option = document.createElement("option");
+            option.value = cont.id;
+            option.textContent = cont.tipo;
+            select.appendChild(option);
+        });
+    } catch (err) {
+        console.error(err);
+        alert("No se pudieron cargar los contratos.");
     }
 }
 
@@ -50,7 +84,8 @@ document.getElementById("form-empleado").addEventListener("submit", async (e) =>
         fecha_nacimiento: document.getElementById("emp-fecha-nac").value || null,
         correo_electronico: document.getElementById("emp-email").value || null,
         dni: document.getElementById("emp-dni").value || null,
-        foto_perfil: " "
+        dpto_id: parseInt(document.getElementById("emp-departamento").value) || null,
+        contrato_id: parseInt(document.getElementById("emp-contrato").value) || null
     };
 
     try {
@@ -103,6 +138,8 @@ async function editarEmpleado(id) {
         document.getElementById("emp-fecha-nac").value = emp.fechaNacimiento || "";
         document.getElementById("emp-email").value = emp.correoElectronico || "";
         document.getElementById("emp-dni").value = emp.dni || "";
+        document.getElementById("emp-departamento").value = emp.dptoId || "";
+        document.getElementById("emp-contrato").value = emp.contratoId || "";
 
         document.getElementById("form-titulo").textContent = "Editar Empleado";
     } catch (err) {
@@ -158,5 +195,7 @@ function logout() {
 window.onload = () => {
     checkAuth();
     cargarEmpleados();
+    cargarDepartamentos();
+    cargarContratos();
     // Si ya tienes window.onload, combina las funciones
 };
